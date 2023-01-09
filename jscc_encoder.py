@@ -72,20 +72,6 @@ class JSCCEncoder(nn.Module):
         self.norm = norm_layer(embed_dim)
 
     def forward(self, x, px, eta):
-        """
-        JSCCEncoder encodes latent representations to variable length channel-input vector.
-
-        Arguments:
-        x: Latent representation (patch embeddings), shape of BxCxHxW, also viewed as Bx(HxW)xC.
-        px: Estimated probability of x, shape of BxCxHxW, also viewed as Bx(HxW)xC.
-        eta: Scaling factor from entropy to channel bandwidth cost.
-
-        Returns:
-        s_masked: Channel-input vector.
-        indexes: The length of each patch embedding, shape of BxHxW.
-        mask: Binary mask, shape of BxCxHxW.
-        """
-
         B, C, H, W = x.size()
         hx = torch.clamp_min(-torch.log(px) / math.log(2), 0)
         symbol_num = torch.sum(hx, dim=1).flatten(0) * eta
